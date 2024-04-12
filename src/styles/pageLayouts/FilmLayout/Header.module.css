@@ -1,0 +1,21 @@
+.title {
+	font-size: 48px;
+	text-align: center;
+	overflow: hidden;
+}
+
+.titleHighlight {
+	color: orange;
+}
+
+.container {
+	display: flex;
+	align-items: center;
+}
+.bgImage {
+	position: absolute;
+	object-fit: cover;
+
+	z-index: -1;
+	filter: blur(10px);
+}
