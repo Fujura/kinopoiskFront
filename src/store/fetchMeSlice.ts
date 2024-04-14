@@ -26,9 +26,12 @@ export const fetchMe = createAsyncThunk<User[], void, { rejectValue: any }>(
 		try {
 			const cookie = parseCookies();
 
-			const response = await axios.get<User[]>(`${API_LINK}/api/users/me`, {
-				headers: { Authorization: `Bearer ${cookie.jwt}` },
-			});
+			const response = await axios.get<User[]>(
+				`${API_LINK}/api/users/me?populate=*`,
+				{
+					headers: { Authorization: `Bearer ${cookie.jwt}` },
+				}
+			);
 			return response.data;
 		} catch (error: any) {
 			console.log(error);

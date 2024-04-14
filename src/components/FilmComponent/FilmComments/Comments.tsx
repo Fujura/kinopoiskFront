@@ -1,43 +1,37 @@
-import { fetchMe } from "@/store/fetchMeSlice";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+// Comments.tsx
+import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import React, { FC, FormEvent, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import CommentItem from "./CommentItem/CommentItem";
 import { DottedLoader } from "@/components/Loaders/DottedLoader";
 import styles from "@/styles/pageLayouts/FilmLayout/Comments/CommentsContainer/CommentsContainer.module.css";
+import AddComment from "./AddComment/AddComment";
+import { fetchMe } from "@/store/fetchMeSlice";
 
-interface propsData {
+interface CommentsProps {
 	data: any;
 }
 
 const API_LINK = process.env.NEXT_PUBLIC_API_LINK;
-const Comments: FC<propsData> = ({ data }) => {
-	const userData = useSelector((state: any) => state.todos.data);
-	const [hasFilmDB, setFilmDB] = useState<boolean>();
-	const [inputText, setInputText] = useState<string>("");
-	const [filmData, setFilmData] = useState<any>();
-	const [cookie, setCookie] = useCookies(["jwt"]);
-	const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-	const postFilm = async () => {
-		try {
-			const request = await axios.post(`${API_LINK}/api/films`, {
-				data: {
-					imdbID: data.imdbID,
-					filmTitle: data.Title,
-					year: data.Year,
-				},
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
+const Comments: FC<CommentsProps> = ({ data }) => {
+	const [filmData, setFilmData] = useState<any>();
+	const [hasFilmDB, setFilmDB] = useState<boolean>();
+	const [updateComments, setUpdateComments] = useState<boolean>(false);
+	const [isAuth, setIsAuth] = useState<boolean>();
+	const [cookie] = useCookies(["jwt"]);
+	const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
 	useEffect(() => {
 		dispatch(fetchMe());
+		if (cookie.jwt) setIsAuth(true);
+		else setIsAuth(false);
+	}, []);
+
+	useEffect(() => {
 		if (data.imdbID) {
 			(async () => {
 				try {
@@ -45,73 +39,71 @@ const Comments: FC<propsData> = ({ data }) => {
 						`${API_LINK}/api/films?populate=deep,3&filters[imdbID][$eq]=${data.imdbID}`
 					);
 					if (!!response.data.data.length) {
-						setFilmDB(true);
 						setFilmData(response.data.data[0]);
+						setFilmDB(true);
 					} else {
-						postFilm();
 						setFilmDB(false);
+						postFilm();
 					}
 				} catch (error) {
 					console.log(error);
 				}
 			})();
 		}
-	}, [hasFilmDB]);
+	}, [updateComments, hasFilmDB]);
 
-	console.log(filmData);
-
-	const postCommentHandler = async (e: FormEvent) => {
-		e.preventDefault();
-		if (inputText) {
-			try {
-				const response = await axios.post(
-					`${API_LINK}/api/comments`,
-					{
-						data: {
-							film: filmData,
-							text: inputText,
-							user: userData,
-						},
-					},
-					{
-						headers: { Authorization: `Bearer ${cookie.jwt}` },
-					}
-				);
-				console.log(response);
-			} catch (error) {
-				console.log(error);
-			}
+	const postFilm = async () => {
+		try {
+			await axios.post(`${API_LINK}/api/films`, {
+				data: {
+					imdbID: data.imdbID,
+					filmTitle: data.Title,
+					year: data.Year,
+					plot: data.Plot,
+					runTime: data.Runtime,
+					genre: data.Genre,
+					rating: data.imdbRating,
+					imageUrl: data.Poster,
+				},
+			});
+			setFilmDB(true);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
 	return (
-		<section>
-			<input
-				type="text"
-				value={inputText}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-					setInputText(e.target.value)
-				}
-				onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-					if (e.keyCode === 13) {
-						postCommentHandler(e);
-					}
-				}}
-			/>
-			<ul>
-				{hasFilmDB ? (
-					filmData &&
-					filmData.attributes &&
-					filmData.attributes.comments.data.map((comment: any) => (
-						<CommentItem key={comment.id} commentData={comment.attributes} />
-					))
-				) : (
-					<div className={styles.loadingContainer}>
-						<DottedLoader />
-						<p>загрузка комментариев</p>
-					</div>
-				)}
-			</ul>
+		<section style={{ marginTop: "100px" }}>
+			{isAuth ? (
+				<AddComment
+					filmData={filmData}
+					updateComments={[setUpdateComments, updateComments]}
+				/>
+			) : (
+				<h3 style={{ textAlign: "center" }}>
+					Авторизуйтесь, чтобы оставлять комментарии!
+				</h3>
+			)}
+			{hasFilmDB ? (
+				<ul style={{ padding: 0 }}>
+					{!!filmData?.attributes?.comments?.data?.length ? (
+						filmData &&
+						filmData.attributes &&
+						filmData.attributes.comments.data.map((comment: any) => (
+							<CommentItem key={comment.id} commentData={comment.attributes} />
+						))
+					) : (
+						<p style={{ textAlign: "center", marginTop: "40px" }}>
+							Будь первым, кто оставил здесь комментарий!
+						</p>
+					)}
+				</ul>
+			) : (
+				<div className={styles.loadingContainer}>
+					<DottedLoader />
+					<p>загрузка комментариев</p>
+				</div>
+			)}
 		</section>
 	);
 };

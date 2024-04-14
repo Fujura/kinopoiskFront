@@ -1,0 +1,19 @@
+.filmsContainer {
+	display: grid;
+	gap: 100px;
+	grid-template-columns: 260px 260px 260px;
+	justify-content: center;
+}
+
+@media screen and (max-width: 998px) {
+	.filmsContainer {
+		grid-template-columns: 260px 260px;
+	}
+}
+
+@media screen and (max-width: 700px) {
+	.filmsContainer {
+		grid-template-columns: 260px;
+		gap: 50px;
+	}
+}

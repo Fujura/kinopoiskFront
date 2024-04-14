@@ -3,3 +3,37 @@
 	max-width: 1280px;
 	margin: 0 auto;
 }
+
+.ratingContainer {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.infoContainer {
+	margin-left: 20px;
+}
+
+.bgImage {
+	position: absolute;
+	object-fit: cover;
+
+	z-index: -1;
+	filter: blur(100px);
+}
+@media screen and (max-width: 768px) {
+	.container {
+		flex-direction: column;
+	}
+
+	.img {
+		width: 70vw;
+	}
+
+	.imgContainer {
+		margin: 20px auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 90%;
+	}
+}

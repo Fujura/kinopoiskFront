@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import styles from "@/styles/pageLayouts/FilmLayout/Header.module.css";
 import Image from "next/image";
-import { LazyLoader } from "@/components/Loaders/LazyLoader";
-import zIndex from "@mui/material/styles/zIndex";
 const FilmHeader = () => {
 	return (
 		<div className={styles.container}>
@@ -11,7 +9,7 @@ const FilmHeader = () => {
 				alt="Splash Image"
 				layout="fill"
 				className={styles.bgImage}
-				style={{ zIndex: -1, filter: "blur(10px)" }}
+				style={{ zIndex: -1, filter: "blur(15px)" }}
 				quality={75}
 			/>
 			<h2 className={styles.title}>

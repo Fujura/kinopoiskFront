@@ -1,41 +1,54 @@
 import React, { FC } from "react";
 import styles from "@/styles/pageLayouts/FilmLayout/Comments/CommentItem/CommentItem.module.css";
-interface commentProps {
-	commentData: any;
+import Image from "next/image";
+
+interface CommentItemProps {
+	commentData: {
+		text: string;
+		createdAt: string;
+		user: {
+			data: {
+				attributes: {
+					username: string;
+				};
+			};
+		};
+	};
 }
-const CommentItem: FC<commentProps> = ({ commentData }) => {
-	const { text, createdAt } = commentData;
-	const userData = commentData?.user?.data?.attributes;
-	console.log(userData);
+
+const API_LINK = process.env.NEXT_PUBLIC_API_LINK;
+
+const CommentItem: FC<CommentItemProps> = ({ commentData }) => {
+	const { text, createdAt, user } = commentData;
+	const { username } = user.data.attributes;
+
 	const date = new Date(createdAt);
+	const formattedDate = new Intl.DateTimeFormat("ru-RU", {
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+		hour: "numeric",
+		minute: "2-digit",
+	}).format(date);
 
-	const monthNames = [
-		"января",
-		"февраля",
-		"марта",
-		"апреля",
-		"мая",
-		"июня",
-		"июля",
-		"августа",
-		"сентября",
-		"октября",
-		"ноября",
-		"декабря",
-	];
-
-	const day = date.getDate();
-	const monthIndex = date.getMonth();
-	const year = date.getFullYear();
-	const hours = date.getHours();
-	let minutes: string | any = date.getMinutes();
-	minutes = minutes < 10 ? `0${minutes}` : minutes;
-
-	const formattedDate = `${day} ${monthNames[monthIndex]} ${year}, ${hours}:${minutes}`;
 	return (
 		<li className={styles.container}>
-			<h4 className={styles.itemTitle}>{userData.username}</h4>
-			{commentData.text} {formattedDate}
+			<div className={styles.imgContainer}>
+				<Image
+					src={"/profileDefault.png"}
+					width={64}
+					height={64}
+					alt="smtg"
+					quality={100}
+				/>
+			</div>
+			<div className={styles.infoContainer}>
+				<div className={styles.topPart}>
+					<h4 className={styles.itemTitle}>{username}</h4>
+					<p className={styles.date}>{formattedDate}</p>
+				</div>
+				<p>{text}</p>
+			</div>
 		</li>
 	);
 };

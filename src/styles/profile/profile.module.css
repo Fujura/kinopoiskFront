@@ -1,0 +1,25 @@
+.profileContainer {
+	max-width: 1280px;
+	margin: 0 auto;
+	background-color: #000;
+	color: #fff;
+	padding: 0;
+	height: 100vh;
+	border-radius: 8px;
+}
+
+.userContainer {
+	display: flex;
+	align-items: center;
+}
+
+.userInfo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 200px;
+}
+
+.userMoreInfo {
+	margin-left: 20px;
+}

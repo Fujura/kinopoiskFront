@@ -5,3 +5,52 @@
 	align-items: center;
 	margin: 20px auto;
 }
+
+.inputContainer {
+	margin: 20px auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inputTitle {
+	margin-right: 15px;
+}
+.formBtn {
+	height: 40px;
+	border-radius: 4px;
+	background-color: #fff;
+	border: none;
+	margin-left: 10px;
+	font-size: 16px;
+	cursor: pointer;
+}
+.inputElevated {
+	font-size: 16px;
+	line-height: 1.5;
+	border: none;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+	border-radius: 5px;
+	width: 300px;
+	padding: 0.5em 1em 0.5em 0.5em;
+}
+
+.inputElevated::placeholder {
+	color: #838d99;
+}
+
+.inputElevated:focus {
+	outline: none;
+	box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16);
+}
+
+@media screen and (max-width: 768px) {
+	.inputContainer {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.inputElevated {
+		max-width: 80%;
+	}
+}

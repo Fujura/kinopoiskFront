@@ -8,7 +8,7 @@ const API_KEY = process.env.NEXT_PUBLIC_FILM_API_KEY;
 const SearchItem = () => {
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const router = useRouter();
-
+	const [errorHandler, setErrorHandler] = useState<boolean>();
 	const searchFilmHandler = async (e: any) => {
 		e.preventDefault();
 		if (!searchTerm) {
@@ -18,10 +18,15 @@ const SearchItem = () => {
 				const response = await axios.get(
 					`http://www.omdbapi.com/?apikey=${API_KEY}&t=${searchTerm}&type=movie`
 				);
-				console.log(response);
+
 				if (response.data.Response !== "False") {
 					router.push(`filmItem/${response.data.imdbID}`);
 					setSearchTerm("");
+				} else {
+					setErrorHandler(false);
+					setTimeout(() => {
+						setErrorHandler(true);
+					}, 1500);
 				}
 			} catch (error) {
 				console.log(error);
@@ -46,6 +51,11 @@ const SearchItem = () => {
 					}
 				}}
 			/>
+			{!errorHandler ? (
+				<p style={{ textAlign: "center", fontSize: "24px" }}>Фильм не найден</p>
+			) : (
+				<></>
+			)}
 		</form>
 
 		// <FilmItem />
