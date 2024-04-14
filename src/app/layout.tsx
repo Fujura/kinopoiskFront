@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { register } from "swiper/element/bundle";
-import { Provider } from "react-redux";
-import store from "@/store/store";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,7 +13,6 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	register();
 	return (
 		<html lang="en">
 			<body className={inter.className}>{children}</body>

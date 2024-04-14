@@ -8,7 +8,7 @@ const API_KEY = process.env.NEXT_PUBLIC_FILM_API_KEY;
 const SearchItem = () => {
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const router = useRouter();
-	const [errorHandler, setErrorHandler] = useState<boolean>();
+	const [errorHandler, setErrorHandler] = useState<boolean>(true);
 	const searchFilmHandler = async (e: any) => {
 		e.preventDefault();
 		if (!searchTerm) {
@@ -51,6 +51,9 @@ const SearchItem = () => {
 					}
 				}}
 			/>
+			<button type="submit" style={{ marginTop: "10px" }}>
+				Искать
+			</button>
 			{!errorHandler ? (
 				<p style={{ textAlign: "center", fontSize: "24px" }}>Фильм не найден</p>
 			) : (
